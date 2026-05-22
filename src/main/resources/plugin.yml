@@ -1,0 +1,13 @@
+name: MagicModels
+version: '${version}'
+
+main: org.psyrioty.magicModels.MagicModels
+api-version: '1.21.11'
+load: POSTWORLD
+
+commands:
+  magicmodels:
+    description: MagicModels plugin commands
+    usage: /magicmodels
+    permission: magicmodels.admin
+    permission-message: "Not permission"
