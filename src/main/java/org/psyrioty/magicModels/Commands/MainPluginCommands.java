@@ -22,31 +22,9 @@ public class MainPluginCommands implements CommandExecutor {
         if(args.length == 0){
             return true;
         }
-        Set<Model> modelSet = MagicModels.getPlugin().getModels();
-        for(Model model: modelSet){
-            if(model.getName().equals(args[0])){
 
-                ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(player);
+        MagicModels.getPlugin().spawnModel(player, args[0]);
 
-                if(activeEntity == null){
-                    activeEntity = new ActiveEntity(
-                            player
-                    );
-                }
-
-                ActiveModel activeModel = new ActiveModel(
-                        player,
-                        model,
-                        activeEntity
-                );
-
-                activeEntity.addActiveModel(activeModel);
-
-                MagicModels.getPlugin().getActiveModels().add(activeModel);
-                MagicModels.getPlugin().getActiveEntities().add(activeEntity);
-                return true;
-            }
-        }
 
         return true;
     }

@@ -121,4 +121,30 @@ public final class MagicModels extends JavaPlugin {
     public Set<ActiveModel> getActiveModels() {
         return activeModels;
     }
+
+    public void spawnModel(Entity entity, String id){
+        for(Model model: models){
+            if(model.getName().equals(id)){
+
+                ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
+
+                if(activeEntity == null){
+                    activeEntity = new ActiveEntity(
+                            entity
+                    );
+                }
+
+                ActiveModel activeModel = new ActiveModel(
+                        entity,
+                        model,
+                        activeEntity
+                );
+
+                activeEntity.addActiveModel(activeModel);
+
+                MagicModels.getPlugin().getActiveModels().add(activeModel);
+                MagicModels.getPlugin().getActiveEntities().add(activeEntity);
+            }
+        }
+    }
 }
