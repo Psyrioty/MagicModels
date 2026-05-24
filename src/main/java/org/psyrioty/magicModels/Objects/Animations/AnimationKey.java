@@ -45,4 +45,20 @@ public class AnimationKey {
     public String getTypeKey() {
         return typeKey;
     }
+
+    public AnimationKey clone(){
+        if(typeKey.equals("position")){
+            return new AnimationKey(
+                    tick,
+                    x * 16, y * 16, z * 16,
+                    typeKey
+            );
+        }
+
+        return new AnimationKey(
+                tick,
+                x, y, z,
+                typeKey
+        );
+    }
 }

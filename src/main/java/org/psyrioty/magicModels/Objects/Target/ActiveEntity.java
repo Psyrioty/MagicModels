@@ -1,9 +1,13 @@
 package org.psyrioty.magicModels.Objects.Target;
 
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
 import org.psyrioty.magicModels.Objects.ActiveModel;
+import org.psyrioty.magicModels.Objects.Animations.Animation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,35 @@ public class ActiveEntity {
             Entity target
     ){
         this.target = target;
+    }
+
+    public void animationTick(){
+        walk();
+
+        for(ActiveModel activeModel: activeModels){
+            activeModel.animationTick();
+        }
+    }
+
+    private void walk(){
+        Location location = target.getLocation();
+        boolean moving = x != location.getX() ||
+                z != location.getZ();
+
+        setLocation(
+                location.getWorld(),
+                location.getX(),
+                location.getY(),
+                location.getZ()
+        );
+
+        for (ActiveModel activeModel : activeModels) {
+            for (Animation animation : activeModel.getAnimationController().getAnimations()) {
+                if(animation.getName().equals("walk")){
+                    animation.setEnable(moving);
+                }
+            }
+        }
     }
 
     public Entity getTarget() {

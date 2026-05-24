@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class AnimationLine {
-    private final List<AnimationKey> rotationKeys = new ArrayList<>();
-    private final List<AnimationKey> scaleKeys = new ArrayList<>();
-    private final List<AnimationKey> translateKeys = new ArrayList<>();
+    private List<AnimationKey> rotationKeys = new ArrayList<>();
+    private List<AnimationKey> scaleKeys = new ArrayList<>();
+    private List<AnimationKey> translateKeys = new ArrayList<>();
     private final UUID uuidBone;
 
     public AnimationLine(UUID uuidBone, List<AnimationKey> animationKeys) {
@@ -29,6 +29,19 @@ public class AnimationLine {
                 case "scale" -> scaleKeys.add(animationKey);
             }
         }
+    }
+
+    public AnimationLine(
+            UUID uuidBone,
+            List<AnimationKey> rotationKeys,
+            List<AnimationKey> scaleKeys,
+            List<AnimationKey> translateKeys
+    ){
+        this.uuidBone = uuidBone;
+
+        this.rotationKeys = rotationKeys;
+        this.scaleKeys = scaleKeys;
+        this.translateKeys = translateKeys;
     }
 
     public void animationTick(int tick, List<Bone> bones, Entity target) {
@@ -306,5 +319,32 @@ public class AnimationLine {
 
         int actualityTick = tick - oldKeyTick;
         return oldKeyValue + (actualityTick * stepValueInTick);
+    }
+
+    public AnimationLine clone(){
+        List<AnimationKey> rotationKeysNew = new ArrayList<>();
+        List<AnimationKey> translateKeysNew = new ArrayList<>();
+        List<AnimationKey> scaleKeysNew = new ArrayList<>();
+
+        for(AnimationKey animationKey: rotationKeysNew){
+            rotationKeysNew.add(animationKey.clone());
+        }
+
+        for(AnimationKey animationKey: translateKeysNew){
+            rotationKeysNew.add(animationKey.clone());
+        }
+
+        for(AnimationKey animationKey: scaleKeysNew){
+            rotationKeysNew.add(animationKey.clone());
+        }
+
+        AnimationLine animationLine = new AnimationLine(
+                uuidBone,
+                rotationKeysNew,
+                scaleKeysNew,
+                translateKeysNew
+        );
+
+        return animationLine;
     }
 }

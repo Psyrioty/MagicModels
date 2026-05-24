@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.psyrioty.magicModels.MagicModels;
 import org.psyrioty.magicModels.Objects.ActiveModel;
+import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -18,8 +19,8 @@ public class Tasker {
 
     private void update(){
         updateTask = Bukkit.getScheduler().runTaskTimerAsynchronously(MagicModels.getPlugin(), () -> {
-            for(ActiveModel model: MagicModels.getPlugin().getActiveModels()){
-                model.animationTick();
+            for (ActiveEntity activeEntity: MagicModels.getPlugin().getActiveEntities()){
+                activeEntity.animationTick();
             }
         },1L,1L);
     }

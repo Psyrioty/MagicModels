@@ -1,6 +1,7 @@
 package org.psyrioty.magicModels;
 
 import com.google.gson.JsonObject;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.PluginManager;
@@ -122,7 +123,7 @@ public final class MagicModels extends JavaPlugin {
         return activeModels;
     }
 
-    public void spawnModel(Entity entity, String id){
+    public ActiveModel spawnModel(Entity entity, String id){
         for(Model model: models){
             if(model.getName().equals(id)){
 
@@ -144,7 +145,40 @@ public final class MagicModels extends JavaPlugin {
 
                 MagicModels.getPlugin().getActiveModels().add(activeModel);
                 MagicModels.getPlugin().getActiveEntities().add(activeEntity);
+
+                return activeModel;
             }
         }
+
+        return null;
+    }
+
+    public ActiveModel spawnModel(Entity entity, Model model){
+        try {
+            ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
+
+            if(activeEntity == null){
+                activeEntity = new ActiveEntity(
+                        entity
+                );
+            }
+
+            ActiveModel activeModel = new ActiveModel(
+                    entity,
+                    model,
+                    activeEntity
+            );
+
+            activeEntity.addActiveModel(activeModel);
+
+            MagicModels.getPlugin().getActiveModels().add(activeModel);
+            MagicModels.getPlugin().getActiveEntities().add(activeEntity);
+
+            return activeModel;
+
+        }catch (Exception exception){
+            Bukkit.getLogger().severe("MagicModels MagicModels.java spawnModel() error " + exception.getMessage());
+        }
+        return null;
     }
 }

@@ -72,4 +72,23 @@ public class Animation {
     public boolean isEnable() {
         return enable;
     }
+
+    public Animation clone(){
+        List<AnimationLine> animationLineList = new ArrayList<>();
+
+        for(AnimationLine animationLine: animationLines){
+            animationLineList.add(animationLine.clone());
+        }
+
+        Animation animation = new Animation(
+                name,
+                uuid,
+                loop,
+                animationLineList,
+                length,
+                weight
+        );
+
+        return animation;
+    }
 }

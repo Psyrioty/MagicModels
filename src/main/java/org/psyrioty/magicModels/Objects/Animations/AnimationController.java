@@ -65,4 +65,14 @@ public class AnimationController {
     public List<Animation> getAnimations() {
         return animations;
     }
+
+    public AnimationController clone(){
+        List<Animation> animationList = new ArrayList<>();
+        for(Animation animation: animations){
+            animationList.add(animation.clone());
+        }
+
+        AnimationController animationController = new AnimationController(animationList);
+        return animationController;
+    }
 }

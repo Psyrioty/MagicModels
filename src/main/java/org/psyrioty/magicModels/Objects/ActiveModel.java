@@ -25,7 +25,7 @@ public class ActiveModel {
     ){
         this.target = target;
         getHeadBones(model.getHeadBones(), null);
-        this.animationController = model.getAnimationController();
+        this.animationController = model.getAnimationController().clone();
 
 
         this.activeEntity = activeEntity;
@@ -85,38 +85,10 @@ public class ActiveModel {
     }
 
     public void animationTick(){
-        walk(activeEntity, target);
         animationController.animationTick(headBones, target);
 
         clearNewOriginBones(headBones);
     }
-
-    private void walk(ActiveEntity activeEntity, Entity entity){
-
-        Vector velocity = entity.getVelocity();
-        Bukkit.getLogger().info(velocity.toString());
-
-        Location location = entity.getLocation();
-        boolean moving = activeEntity.getX() != location.getX() ||
-                activeEntity.getZ() != location.getZ();
-
-        activeEntity.setLocation(
-                location.getWorld(),
-                location.getX(),
-                location.getY(),
-                location.getZ()
-        );
-
-        for (ActiveModel activeModel : activeEntity.getActiveModels()) {
-            for (Animation animation : activeModel.getAnimationController().getAnimations()) {
-                if(animation.getName().equals("walk")){
-                    animation.setEnable(moving);
-                }
-            }
-        }
-    }
-
-
 
     private void clearNewOriginBones(List<Bone> bones){
         if(bones == null){
