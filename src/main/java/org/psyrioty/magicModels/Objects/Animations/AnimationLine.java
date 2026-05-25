@@ -8,6 +8,7 @@ import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.psyrioty.magicModels.Objects.Bone;
+import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class AnimationLine {
         this.translateKeys = translateKeys;
     }
 
-    public void animationTick(int tick, List<Bone> bones, Entity target) {
+    public void animationTick(int tick, List<Bone> bones, Entity target, ActiveEntity activeEntity) {
         Bone animatedBone = getNeedBone(bones);
         if (animatedBone == null) {
             return;
@@ -74,7 +75,8 @@ public class AnimationLine {
                 new Vector3f(0, 0, 0),
                 targetRotation,
                 new Vector3f(2f, 2f, 2f),
-                new Vector3f(0, 0, 0)
+                new Vector3f(0, 0, 0),
+                activeEntity
         );
     }
 
@@ -83,17 +85,28 @@ public class AnimationLine {
             Vector3f parentWorldPos,
             Quaternionf parentWorldRot,
             Vector3f parentWorldScale,
-            Vector3f parentBindOrigin
+            Vector3f parentBindOrigin,
+            ActiveEntity activeEntity
     ) {
         if (bone == null || bone.getBoneEntity() == null) {
             return;
         }
 
-        Vector3f bindOrigin = new Vector3f(
-                bone.getOriginX(),
-                bone.getOriginY(),
-                bone.getOriginZ()
-        );
+        Vector3f bindOrigin;
+
+        if(bone.getHeadBone() == null) {
+            bindOrigin = new Vector3f(
+                    bone.getOriginX(),
+                    (float) (bone.getOriginY() + activeEntity.getAddOffsetY()),
+                    bone.getOriginZ()
+            );
+        }else{
+            bindOrigin = new Vector3f(
+                    bone.getOriginX(),
+                    bone.getOriginY(),
+                    bone.getOriginZ()
+            );
+        }
 
         Quaternionf bindRotation = new Quaternionf()
                 .rotateZ((float) Math.toRadians(bone.getRotationZ()))
@@ -140,7 +153,7 @@ public class AnimationLine {
         ));
 
         for (Bone child : bone.getChildBones()) {
-            applyBoneRecursive(child, worldPos, worldRotation, worldScale, bindOrigin);
+            applyBoneRecursive(child, worldPos, worldRotation, worldScale, bindOrigin, activeEntity);
         }
     }
 
@@ -326,16 +339,16 @@ public class AnimationLine {
         List<AnimationKey> translateKeysNew = new ArrayList<>();
         List<AnimationKey> scaleKeysNew = new ArrayList<>();
 
-        for(AnimationKey animationKey: rotationKeysNew){
+        for(AnimationKey animationKey: rotationKeys){
             rotationKeysNew.add(animationKey.clone());
         }
 
-        for(AnimationKey animationKey: translateKeysNew){
-            rotationKeysNew.add(animationKey.clone());
+        for(AnimationKey animationKey: translateKeys){
+            translateKeysNew.add(animationKey.clone());
         }
 
-        for(AnimationKey animationKey: scaleKeysNew){
-            rotationKeysNew.add(animationKey.clone());
+        for(AnimationKey animationKey: scaleKeys){
+            scaleKeysNew.add(animationKey.clone());
         }
 
         AnimationLine animationLine = new AnimationLine(

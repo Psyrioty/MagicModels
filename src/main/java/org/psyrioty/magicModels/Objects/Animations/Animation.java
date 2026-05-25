@@ -2,6 +2,7 @@ package org.psyrioty.magicModels.Objects.Animations;
 
 import org.bukkit.entity.Entity;
 import org.psyrioty.magicModels.Objects.Bone;
+import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -52,9 +53,9 @@ public class Animation {
         return uuid;
     }
 
-    public void animationTick(List<Bone> bones, Entity target){
+    public void animationTick(List<Bone> bones, Entity target, ActiveEntity activeEntity){
         for(AnimationLine animationLine: animationLines){
-            animationLine.animationTick(tick, bones, target);
+            animationLine.animationTick(tick, bones, target, activeEntity);
         }
         tick++;
         if(tick > length){

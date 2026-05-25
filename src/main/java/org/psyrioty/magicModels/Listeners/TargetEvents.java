@@ -8,7 +8,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.psyrioty.magicModels.MagicModels;
@@ -141,10 +143,42 @@ public class TargetEvents implements Listener {
         }
     }
 
-
-
+    //=============================УДАЛЕНИЯ МОДЕЛЕЙ======================================
     @EventHandler
     private void playerExit(PlayerQuitEvent event){
+        Player player = event.getPlayer();
+        ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(player);
 
+        if(activeEntity == null){
+            return;
+        }
+
+        MagicModels.getPlugin().getActiveEntities().remove(activeEntity);
+        activeEntity.removeAll();
     }
+
+    @EventHandler
+    private void targetDeath(EntityDeathEvent event){
+        Entity entity = event.getEntity();
+        ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
+
+        if(activeEntity == null){
+            return;
+        }
+
+        activeEntity.removeAll();
+    }
+
+    @EventHandler
+    private void targetDeath(PlayerDeathEvent event){
+        Entity entity = event.getEntity();
+        ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
+
+        if(activeEntity == null){
+            return;
+        }
+
+        activeEntity.removeAll();
+    }
+    //----------------------------------------------------------------------------------
 }

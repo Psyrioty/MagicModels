@@ -28,10 +28,10 @@ public class AnimationController {
                 .toList();
     }
 
-    public void animationTick(List<Bone> bones, Entity target){
+    public void animationTick(List<Bone> bones, Entity target, ActiveEntity activeEntity){
         for(Animation animation: animations){
             if(animation.isEnable()){
-                animation.animationTick(bones, target);
+                animation.animationTick(bones, target, activeEntity);
                 break;
             }
         }

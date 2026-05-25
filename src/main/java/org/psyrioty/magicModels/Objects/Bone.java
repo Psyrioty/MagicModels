@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.psyrioty.magicModels.MagicModels;
 import org.psyrioty.magicModels.Objects.ResourcePack.Group;
 
 import java.util.ArrayList;
@@ -40,6 +41,17 @@ public class Bone {
     float addRotateX, addRotateY, addRotateZ;
     float addScaleX, addScaleY, addScaleZ;
     //=======================================================================
+
+    //------------------для настроек модели----------------------------------
+    float offsetX = 0;
+    float offsetY = 0;
+    float offsetZ = 0;
+
+    float scale = 1;
+
+    int brightness = 0;
+    //=======================================================================
+
 
     Group group; //для формирования ресурспаков
 
@@ -90,6 +102,14 @@ public class Bone {
         this.group = group;
 
         this.modelName = modelName;
+    }
+
+    public void remove(){
+        boneEntity.leaveVehicle();
+        for(Entity entity: boneEntity.getPassengers()){
+            entity.leaveVehicle();
+        }
+        boneEntity.remove();
     }
 
     public void setAnimScale(float x, float y, float z){
