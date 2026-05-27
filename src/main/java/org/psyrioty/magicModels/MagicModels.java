@@ -123,7 +123,7 @@ public final class MagicModels extends JavaPlugin {
         return activeModels;
     }
 
-    public ActiveModel spawnModel(Entity entity, String id){
+    public ActiveModel spawnModel(Entity entity, String id, HashMap<UUID, Integer> boneBrightness){
         for(Model model: models){
             if(model.getName().equals(id)){
 
@@ -138,7 +138,8 @@ public final class MagicModels extends JavaPlugin {
                 ActiveModel activeModel = new ActiveModel(
                         entity,
                         model,
-                        activeEntity
+                        activeEntity,
+                        boneBrightness
                 );
 
                 activeEntity.addActiveModel(activeModel);
@@ -153,7 +154,11 @@ public final class MagicModels extends JavaPlugin {
         return null;
     }
 
-    public ActiveModel spawnModel(Entity entity, Model model){
+    public ActiveModel spawnModel(
+            Entity entity,
+            Model model,
+            HashMap<UUID, Integer> boneBrightness
+    ){
         try {
             ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
 
@@ -166,7 +171,50 @@ public final class MagicModels extends JavaPlugin {
             ActiveModel activeModel = new ActiveModel(
                     entity,
                     model,
-                    activeEntity
+                    activeEntity,
+                    boneBrightness
+            );
+
+            activeEntity.addActiveModel(activeModel);
+
+            MagicModels.getPlugin().getActiveModels().add(activeModel);
+            MagicModels.getPlugin().getActiveEntities().add(activeEntity);
+
+            return activeModel;
+
+        }catch (Exception exception){
+            Bukkit.getLogger().severe("MagicModels MagicModels.java spawnModel() error " + exception.getMessage());
+        }
+        return null;
+    }
+
+    public ActiveModel spawnModel(
+            Entity entity,
+            Model model,
+            HashMap<UUID, Integer> boneBrightness,
+            float scale,
+            float offsetX,
+            float offsetY,
+            float offsetZ
+    ){
+        try {
+            ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
+
+            if(activeEntity == null){
+                activeEntity = new ActiveEntity(
+                        entity
+                );
+            }
+
+            ActiveModel activeModel = new ActiveModel(
+                    entity,
+                    model,
+                    activeEntity,
+                    boneBrightness,
+                    scale,
+                    offsetX,
+                    offsetY,
+                    offsetZ
             );
 
             activeEntity.addActiveModel(activeModel);

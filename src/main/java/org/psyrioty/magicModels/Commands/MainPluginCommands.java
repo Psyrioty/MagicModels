@@ -23,7 +23,7 @@ public class MainPluginCommands implements CommandExecutor {
             return true;
         }
 
-        MagicModels.getPlugin().spawnModel(player, args[0]);
+        MagicModels.getPlugin().spawnModel(player, args[0], null);
 
 
         return true;

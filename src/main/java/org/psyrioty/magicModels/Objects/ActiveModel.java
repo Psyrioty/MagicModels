@@ -16,7 +16,9 @@ import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
 import org.psyrioty.magicModels.Objects.Animations.Animation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class ActiveModel {
     Entity target;
@@ -27,7 +29,8 @@ public class ActiveModel {
     public ActiveModel(
             Entity target,
             Model model,
-            ActiveEntity activeEntity
+            ActiveEntity activeEntity,
+            HashMap<UUID, Integer> boneBrightness
     ){
         this.target = target;
         getHeadBones(model.getHeadBones(), null);
@@ -36,7 +39,36 @@ public class ActiveModel {
 
         this.activeEntity = activeEntity;
 
-        Spawn();
+        Spawn(boneBrightness);
+
+        MagicModels.getPlugin().getActiveModels().add(this);
+    }
+
+    public ActiveModel(
+            Entity target,
+            Model model,
+            ActiveEntity activeEntity,
+
+            HashMap<UUID, Integer> boneBrightness,
+            float scale,
+            float offsetX,
+            float offsetY,
+            float offsetZ
+    ){
+        this.target = target;
+        getHeadBones(model.getHeadBones(), null);
+        this.animationController = model.getAnimationController().clone();
+
+
+        this.activeEntity = activeEntity;
+
+        Spawn(
+                boneBrightness,
+                scale,
+                offsetX,
+                offsetY,
+                offsetZ
+        );
 
         MagicModels.getPlugin().getActiveModels().add(this);
     }
@@ -88,23 +120,89 @@ public class ActiveModel {
         }
     }
 
-    private void Spawn(){
-        spawnBone(null, headBones);
+    private void Spawn(HashMap<UUID, Integer> boneBrightness){
+        spawnBone(
+                null,
+                headBones,
+                boneBrightness,
+                1,
+                0,
+                0,
+                0
+        );
     }
 
-    private void spawnBone(Bone headBone, List<Bone> bones){
+    private void Spawn(
+            HashMap<UUID, Integer> boneBrightness,
+            float scale,
+            float offsetX,
+            float offsetY,
+            float offsetZ
+    ){
+        spawnBone(
+                null,
+                headBones,
+                boneBrightness,
+                scale,
+                offsetX,
+                offsetY,
+                offsetZ
+        );
+    }
+
+    private void spawnBone(
+            Bone headBone,
+            List<Bone> bones,
+            HashMap<UUID, Integer> boneBrightness,
+            float scale,
+            float offsetX,
+            float offsetY,
+            float offsetZ
+    ){
         try {
             for(Bone bone: bones){
+                int brightness = -1;
+
+                if(boneBrightness != null) {
+                    for (UUID uuid : boneBrightness.keySet()) {
+                        if (bone.getUuid().equals(uuid)) {
+                            brightness = boneBrightness.get(uuid);
+                        }
+                    }
+                }
+
                 if(headBone == null){
-                    bone.createBoneEntity(target);
+                    bone.createBoneEntity(
+                            target,
+                            brightness,
+                            scale,
+                            offsetX,
+                            offsetY,
+                            offsetZ
+                    );
                 }else{
-                    bone.createBoneEntity(headBone.getBoneEntity());
+                    bone.createBoneEntity(
+                            headBone.getBoneEntity(),
+                            brightness,
+                            scale,
+                            offsetX,
+                            offsetY,
+                            offsetZ
+                    );
                 }
                 List<Bone> boneList = bone.getChildBones();
                 if(boneList.isEmpty()){
                     continue;
                 }
-                spawnBone(bone, boneList);
+                spawnBone(
+                        bone,
+                        boneList,
+                        boneBrightness,
+                        scale,
+                        offsetX,
+                        offsetY,
+                        offsetZ
+                );
             }
         }catch (Exception exception){
             Bukkit.getLogger().severe("MagicModels error ActiveModel.java spawnBone() " + exception.getMessage());
@@ -129,23 +227,43 @@ public class ActiveModel {
                 isSpectator = true;
             }
         }
+
+        boolean isHided = false;
+        if(
+                livingEntity.isGliding() ||
+                livingEntity.isSwimming()
+        ) {
+            hideAllBones(true);
+            isHided = true;
+        }
+
         if(
                 livingEntity.hasPotionEffect(PotionEffectType.INVISIBILITY) ||
                 livingEntity.isSneaking() ||
                 isSpectator
         ){
-            hideAllBones();
+            if(!isHided) {
+                if (
+                        livingEntity.isGliding() ||
+                                livingEntity.isSwimming()
+                ) {
+                    hideAllBones(true);
+                } else {
+                    hideAllBones(false);
+                }
+            }
         }else{
-            showAllBones();
+            if(
+                    !livingEntity.isGliding() &&
+                    !livingEntity.isSwimming()
+            ) {
+                showAllBones();
+            }
         }
     }
 
     private void showAllBones(){
         for(Player player: Bukkit.getOnlinePlayers()){
-            if(player == target){
-                continue;
-            }
-
             for(Bone bone: headBones) {
                 if(!player.canSee(bone.getBoneEntity())){
                     Bukkit.getScheduler().runTask(MagicModels.getPlugin(), () -> {
@@ -173,14 +291,16 @@ public class ActiveModel {
         }
     }
 
-    private void hideAllBones(){
+    private void hideAllBones(boolean isOtherPose){
         for(Player player: Bukkit.getOnlinePlayers()){
-            if(player == target){
+            if(player == target && !isOtherPose){
                 continue;
             }
 
             for(Bone bone: headBones) {
-                if(player.canSee(bone.getBoneEntity())){
+                if(
+                        player.canSee(bone.getBoneEntity())
+                ){
                     Bukkit.getScheduler().runTask(MagicModels.getPlugin(), () -> {
                                 player.hideEntity(MagicModels.getPlugin(), bone.getBoneEntity());
                             });

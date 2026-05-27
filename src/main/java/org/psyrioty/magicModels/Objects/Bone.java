@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +17,7 @@ import org.psyrioty.magicModels.MagicModels;
 import org.psyrioty.magicModels.Objects.ResourcePack.Group;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -172,6 +174,22 @@ public class Bone {
 
     public float getAnimScaleZ() {
         return animScaleZ;
+    }
+
+    public float getOffsetX() {
+        return offsetX;
+    }
+
+    public float getOffsetY() {
+        return offsetY;
+    }
+
+    public float getOffsetZ() {
+        return offsetZ;
+    }
+
+    public float getScale() {
+        return scale;
     }
 
     public void setAnimPosition(float x, float y, float z){
@@ -344,7 +362,21 @@ public class Bone {
         return boneEntity;
     }
 
-    public void createBoneEntity(Entity target){
+    public void createBoneEntity(
+            Entity target,
+            int brightness,
+            float scale,
+            float offsetX,
+            float offsetY,
+            float offsetZ
+    ){
+        this.scale = scale;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        this.offsetZ = offsetZ;
+        this.brightness = brightness;
+
+
         World world = target.getWorld();
         Location location = target.getLocation();
         location.setPitch(0);
@@ -371,6 +403,10 @@ public class Bone {
         display.setInterpolationDuration(1);
         display.setPersistent(false);
 
+        if(brightness > -1) {
+            display.setBrightness(new Display.Brightness(brightness, brightness));
+        }
+
         Quaternionf rotation = new Quaternionf()
                 .rotateXYZ(
                         (float) Math.toRadians(rotationX),
@@ -379,9 +415,17 @@ public class Bone {
                 );
 
         display.setTransformation(new Transformation(
-                new Vector3f(originX, originY, originZ),        // смещение
+                new Vector3f(
+                        originX + this.offsetX,
+                        originY + this.offsetY,
+                        originZ + this.offsetZ
+                ),        // смещение
                 new Quaternionf(),                              // левый поворот
-                new Vector3f(1 * 2, 1 * 2, 1 * 2),                 // масштаб
+                new Vector3f(
+                        1 * 2 * this.scale,
+                        1 * 2 * this.scale,
+                        1 * 2 * this.scale
+                ),                                              // масштаб
                 rotation                                        // правый поворот
         ));
 

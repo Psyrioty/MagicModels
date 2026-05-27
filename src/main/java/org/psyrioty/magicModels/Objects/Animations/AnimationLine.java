@@ -74,7 +74,7 @@ public class AnimationLine {
                 root,
                 new Vector3f(0, 0, 0),
                 targetRotation,
-                new Vector3f(2f, 2f, 2f),
+                new Vector3f(2f * root.getScale(), 2f * root.getScale(), 2f * root.getScale()),
                 new Vector3f(0, 0, 0),
                 activeEntity
         );
@@ -94,19 +94,17 @@ public class AnimationLine {
 
         Vector3f bindOrigin;
 
-        if(bone.getHeadBone() == null) {
-            bindOrigin = new Vector3f(
-                    bone.getOriginX(),
-                    (float) (bone.getOriginY() + activeEntity.getAddOffsetY()),
-                    bone.getOriginZ()
-            );
-        }else{
-            bindOrigin = new Vector3f(
-                    bone.getOriginX(),
-                    bone.getOriginY(),
-                    bone.getOriginZ()
-            );
-        }
+        //bindOrigin = new Vector3f(
+        //        bone.getOriginX(),
+        //        (float) (bone.getOriginY() - activeEntity.getAddOffsetY()),
+        //        (float) (bone.getOriginZ() + activeEntity.getAddOffsetZ())
+        //);
+
+        bindOrigin = new Vector3f(
+                bone.getOriginX() + bone.getOffsetX(),
+                bone.getOriginY() + bone.getOffsetY(),
+                bone.getOriginZ() + bone.getOffsetZ()
+        );
 
         Quaternionf bindRotation = new Quaternionf()
                 .rotateZ((float) Math.toRadians(bone.getRotationZ()))

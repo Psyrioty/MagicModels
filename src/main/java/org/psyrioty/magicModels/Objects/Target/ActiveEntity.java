@@ -28,7 +28,8 @@ public class ActiveEntity {
 
     double scale;
 
-    double addOffsetY = 0; //для полета и плавания
+    //double addOffsetY = 0; //для полета и плавания
+    //double addOffsetZ = 0; //для полета и плавания
 
     public ActiveEntity(
             Entity target
@@ -45,9 +46,9 @@ public class ActiveEntity {
     }
 
     public void animationTick(){
-        if(target instanceof Player player) {
+        /*if(target instanceof Player player) {
             checkOtherPose(player);
-        }
+        }*/
 
         walk();
 
@@ -56,8 +57,7 @@ public class ActiveEntity {
         }
     }
 
-
-    private void checkOtherPose(Player player){
+    /*private void checkOtherPose(Player player){
         if(
                 player.isGliding() ||
                         player.isSwimming()
@@ -67,12 +67,14 @@ public class ActiveEntity {
 
             double pitchExchangeRate = 90 - pitchPlayer;
 
-            double offsetY = (((double) 1 /180) * pitchExchangeRate) - 1;
+            double offset = (((double) 1 /180) * pitchExchangeRate) - 1;
 
-            this.addOffsetY = offsetY * scalePlayer;
+            this.addOffsetZ = offset * scalePlayer;
+            this.addOffsetY = offset * scalePlayer;
         }else{
             if(this.addOffsetY != 0){
                 this.addOffsetY = 0;
+                this.addOffsetZ = 0;
             }
         }
     }
@@ -80,6 +82,10 @@ public class ActiveEntity {
     public double getAddOffsetY() {
         return addOffsetY;
     }
+
+    public double getAddOffsetZ() {
+        return addOffsetZ;
+    }*/
 
     private void walk(){
         Location location = target.getLocation();
