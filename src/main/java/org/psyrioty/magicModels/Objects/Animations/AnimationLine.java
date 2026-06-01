@@ -45,7 +45,7 @@ public class AnimationLine {
         this.translateKeys = translateKeys;
     }
 
-    public void animationTick(int tick, List<Bone> bones, Entity target, ActiveEntity activeEntity) {
+    public void animationTick(int tick, List<Bone> bones, Entity target, ActiveEntity activeEntity, boolean headModel) {
         Bone animatedBone = getNeedBone(bones);
         if (animatedBone == null) {
             return;
@@ -63,8 +63,15 @@ public class AnimationLine {
         float targetYawRadians = (float) Math.toRadians(-target.getLocation().getYaw());
         Quaternionf targetRotation = new Quaternionf().rotateY(targetYawRadians);
 
-        if(target instanceof Player player){
-            if(player.isGliding() || player.isSwimming()){
+        Vector3f startPos = new Vector3f(0, 0, 0);
+
+        if (headModel && target instanceof Player player) {
+            float pitchRad = (float) Math.toRadians(player.getLocation().getPitch());
+            targetRotation.rotateX(pitchRad);
+
+            startPos = getHeadModelOffset(player);
+        } else if (target instanceof Player player) {
+            if (player.isGliding() || player.isSwimming()) {
                 float targetPitchRadians = (float) Math.toRadians(player.getLocation().getPitch() + 90);
                 targetRotation.rotateX(targetPitchRadians);
             }
@@ -72,12 +79,37 @@ public class AnimationLine {
 
         applyBoneRecursive(
                 root,
-                new Vector3f(0, 0, 0),
+                startPos,
                 targetRotation,
                 new Vector3f(2f * root.getScale(), 2f * root.getScale(), 2f * root.getScale()),
                 new Vector3f(0, 0, 0),
                 activeEntity
         );
+    }
+
+    private Vector3f getHeadModelOffset(Player player) {
+        float pitch = player.getLocation().getPitch();
+        float yaw = player.getLocation().getYaw();
+
+        float scale = 1.0f;
+        if (player.getAttribute(org.bukkit.attribute.Attribute.SCALE) != null) {
+            scale = (float) player.getAttribute(org.bukkit.attribute.Attribute.SCALE).getValue();
+        }
+
+        float localOffsetY = (float) (Math.sqrt(pitch * pitch) * (0.5f / 90f)) * scale;
+        float localOffsetZ = pitch * (0.5f / 90f);
+
+        Vector3f localOffset = new Vector3f(
+                0f,
+                localOffsetY,
+                localOffsetZ
+        );
+
+        Quaternionf rotation = new Quaternionf()
+                .rotateY((float) Math.toRadians(-yaw))
+                .rotateX((float) Math.toRadians(pitch));
+
+        return rotation.transform(localOffset, new Vector3f());
     }
 
     private void applyBoneRecursive(

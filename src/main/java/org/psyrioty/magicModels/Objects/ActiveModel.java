@@ -25,6 +25,7 @@ public class ActiveModel {
     List<Bone> headBones = new ArrayList<>();
     AnimationController animationController;
     ActiveEntity activeEntity;
+    boolean headModel = false;
 
     public ActiveModel(
             Entity target,
@@ -42,6 +43,14 @@ public class ActiveModel {
         Spawn(boneBrightness);
 
         MagicModels.getPlugin().getActiveModels().add(this);
+    }
+
+    public void setHeadModel(boolean headModel) {
+        this.headModel = headModel;
+    }
+
+    public boolean isHeadModel() {
+        return headModel;
     }
 
     public ActiveModel(
@@ -74,11 +83,13 @@ public class ActiveModel {
     }
 
     public void remove(){
-        MagicModels.getPlugin().getActiveModels().remove(this);
-        for(Bone bone: headBones){
-            bone.remove();
-            removeChildBones(bone);
-        }
+        Bukkit.getScheduler().runTask(MagicModels.getPlugin(), () -> {
+            MagicModels.getPlugin().getActiveModels().remove(this);
+            for(Bone bone: headBones){
+                bone.remove();
+                removeChildBones(bone);
+            }
+        });
     }
 
     private void removeChildBones(Bone bone){
@@ -92,6 +103,10 @@ public class ActiveModel {
             boneChild.remove();
             removeChildBones(boneChild);
         }
+    }
+
+    public List<Bone> getHeadBones() {
+        return headBones;
     }
 
     public AnimationController getAnimationController() {
@@ -121,15 +136,25 @@ public class ActiveModel {
     }
 
     private void Spawn(HashMap<UUID, Integer> boneBrightness){
-        spawnBone(
-                null,
-                headBones,
-                boneBrightness,
-                1,
-                0,
-                0,
-                0
-        );
+        Bukkit.getScheduler().runTask(MagicModels.getPlugin(), () -> {
+            spawnBone(
+                    null,
+                    headBones,
+                    boneBrightness,
+                    1,
+                    0,
+                    0,
+                    0
+            );
+        });
+    }
+
+    public ActiveEntity getActiveEntity() {
+        return activeEntity;
+    }
+
+    public Entity getTarget() {
+        return target;
     }
 
     private void Spawn(
@@ -139,15 +164,17 @@ public class ActiveModel {
             float offsetY,
             float offsetZ
     ){
-        spawnBone(
-                null,
-                headBones,
-                boneBrightness,
-                scale,
-                offsetX,
-                offsetY,
-                offsetZ
-        );
+        Bukkit.getScheduler().runTask(MagicModels.getPlugin(), () -> {
+            spawnBone(
+                    null,
+                    headBones,
+                    boneBrightness,
+                    scale,
+                    offsetX,
+                    offsetY,
+                    offsetZ
+            );
+        });
     }
 
     private void spawnBone(
@@ -213,7 +240,7 @@ public class ActiveModel {
         checkTarget();
         checkHide();
 
-        animationController.animationTick(headBones, target, activeEntity);
+        animationController.animationTick(headBones, target, activeEntity, headModel);
 
         clearNewOriginBones(headBones);
     }
@@ -231,7 +258,8 @@ public class ActiveModel {
         boolean isHided = false;
         if(
                 livingEntity.isGliding() ||
-                livingEntity.isSwimming()
+                livingEntity.isSwimming() ||
+                livingEntity.isDead()
         ) {
             hideAllBones(true);
             isHided = true;
@@ -245,7 +273,8 @@ public class ActiveModel {
             if(!isHided) {
                 if (
                         livingEntity.isGliding() ||
-                                livingEntity.isSwimming()
+                        livingEntity.isSwimming() ||
+                        livingEntity.isDead()
                 ) {
                     hideAllBones(true);
                 } else {
@@ -255,7 +284,8 @@ public class ActiveModel {
         }else{
             if(
                     !livingEntity.isGliding() &&
-                    !livingEntity.isSwimming()
+                    !livingEntity.isSwimming() &&
+                    !livingEntity.isDead()
             ) {
                 showAllBones();
             }
@@ -265,6 +295,12 @@ public class ActiveModel {
     private void showAllBones(){
         for(Player player: Bukkit.getOnlinePlayers()){
             for(Bone bone: headBones) {
+                if(bone == null){
+                    continue;
+                }
+                if(bone.getBoneEntity() == null){
+                    continue;
+                }
                 if(!player.canSee(bone.getBoneEntity())){
                     Bukkit.getScheduler().runTask(MagicModels.getPlugin(), () -> {
                         player.showEntity(MagicModels.getPlugin(), bone.getBoneEntity());
@@ -298,6 +334,12 @@ public class ActiveModel {
             }
 
             for(Bone bone: headBones) {
+                if(bone == null){
+                    continue;
+                }
+                if(bone.getBoneEntity() == null){
+                    continue;
+                }
                 if(
                         player.canSee(bone.getBoneEntity())
                 ){
@@ -328,7 +370,13 @@ public class ActiveModel {
 
     private void checkTarget(){
         for(Bone bone: headBones){
+            if(bone == null){
+                return;
+            }
             ItemDisplay boneEntity = bone.getBoneEntity();
+            if(boneEntity == null){
+                return;
+            }
             if(boneEntity.getVehicle() != null){
                 continue;
             }

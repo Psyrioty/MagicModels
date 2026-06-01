@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.psyrioty.magicModels.MagicModels;
 import org.psyrioty.magicModels.Objects.ActiveModel;
 import org.psyrioty.magicModels.Objects.Animations.Animation;
@@ -160,6 +161,9 @@ public class TargetEvents implements Listener {
     @EventHandler
     private void targetDeath(EntityDeathEvent event){
         Entity entity = event.getEntity();
+        if(entity instanceof Player){
+            return;
+        }
         ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
 
         if(activeEntity == null){
@@ -169,7 +173,7 @@ public class TargetEvents implements Listener {
         activeEntity.removeAll();
     }
 
-    @EventHandler
+    /*@EventHandler
     private void targetDeath(PlayerDeathEvent event){
         Entity entity = event.getEntity();
         ActiveEntity activeEntity = MagicModels.getPlugin().findActiveEntity(entity);
@@ -180,5 +184,10 @@ public class TargetEvents implements Listener {
 
         activeEntity.removeAll();
     }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+    }*/
     //----------------------------------------------------------------------------------
 }

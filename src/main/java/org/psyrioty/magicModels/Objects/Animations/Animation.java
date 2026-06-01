@@ -53,9 +53,9 @@ public class Animation {
         return uuid;
     }
 
-    public void animationTick(List<Bone> bones, Entity target, ActiveEntity activeEntity){
+    public void animationTick(List<Bone> bones, Entity target, ActiveEntity activeEntity, boolean headModel){
         for(AnimationLine animationLine: animationLines){
-            animationLine.animationTick(tick, bones, target, activeEntity);
+            animationLine.animationTick(tick, bones, target, activeEntity, headModel);
         }
         tick++;
         if(tick > length){

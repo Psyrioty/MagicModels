@@ -24,6 +24,8 @@ public class ActiveEntity {
     double x;
     double y;
     double z;
+
+    byte tick = 0;
     //-------------------------------------------------------------------
 
     double scale;
@@ -50,10 +52,17 @@ public class ActiveEntity {
             checkOtherPose(player);
         }*/
 
-        walk();
+        if(tick == 1) {
+            walk();
+            tick = 0;
+        }else{
+            tick++;
+        }
 
-        for(ActiveModel activeModel: activeModels){
-            activeModel.animationTick();
+        if(activeModels != null) {
+            for (ActiveModel activeModel : activeModels) {
+                activeModel.animationTick();
+            }
         }
     }
 

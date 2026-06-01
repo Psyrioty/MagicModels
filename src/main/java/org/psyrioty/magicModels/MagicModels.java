@@ -47,7 +47,9 @@ public final class MagicModels extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        for(ActiveModel activeModel: activeModels){
+            activeModel.remove();
+        }
     }
 
     private static List<JsonObject> getCaseList() {
