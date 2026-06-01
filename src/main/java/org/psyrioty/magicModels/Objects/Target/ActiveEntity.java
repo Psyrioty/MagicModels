@@ -26,6 +26,9 @@ public class ActiveEntity {
     double z;
 
     byte tick = 0;
+
+    boolean walking = false;
+    boolean flying = false;
     //-------------------------------------------------------------------
 
     double scale;
@@ -54,6 +57,7 @@ public class ActiveEntity {
 
         if(tick == 1) {
             walk();
+            fly();
             tick = 0;
         }else{
             tick++;
@@ -96,10 +100,30 @@ public class ActiveEntity {
         return addOffsetZ;
     }*/
 
+    private void fly(){
+        if(flying == !target.isOnGround()){
+            return;
+        }
+
+        for (ActiveModel activeModel : activeModels) {
+            for (Animation animation : activeModel.getAnimationController().getAnimations()) {
+                if(animation.getName().equals("fly")){
+                    animation.setEnable(!target.isOnGround());
+                }
+            }
+        }
+
+        flying = !target.isOnGround();
+    }
+
     private void walk(){
         Location location = target.getLocation();
         boolean moving = x != location.getX() ||
                 z != location.getZ();
+
+        if(walking == moving){
+            return;
+        }
 
         setLocation(
                 location.getWorld(),
@@ -115,6 +139,8 @@ public class ActiveEntity {
                 }
             }
         }
+
+        walking = moving;
     }
 
     public Entity getTarget() {
