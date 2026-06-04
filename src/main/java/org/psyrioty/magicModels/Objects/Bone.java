@@ -422,9 +422,9 @@ public class Bone {
                 ),        // смещение
                 new Quaternionf(),                              // левый поворот
                 new Vector3f(
-                        1 * 2 * this.scale,
-                        1 * 2 * this.scale,
-                        1 * 2 * this.scale
+                        1 * MagicModels.getPlugin().getScaleResourcePackModel() * this.scale,
+                        1 * MagicModels.getPlugin().getScaleResourcePackModel() * this.scale,
+                        1 * MagicModels.getPlugin().getScaleResourcePackModel() * this.scale
                 ),                                              // масштаб
                 rotation                                        // правый поворот
         ));

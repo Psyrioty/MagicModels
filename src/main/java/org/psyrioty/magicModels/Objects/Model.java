@@ -30,6 +30,10 @@ public class Model {
         this.animationController = animationController;
     }
 
+    public void setHeadBones(List<Bone> headBones) {
+        this.headBones = headBones;
+    }
+
     public AnimationController getAnimationController() {
         return animationController;
     }

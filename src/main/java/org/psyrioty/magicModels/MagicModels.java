@@ -28,6 +28,8 @@ public final class MagicModels extends JavaPlugin {
 
     static List<JsonObject> caseList = new ArrayList<>(); //для ресурспака
 
+    int scaleResourcePackModel = 5; //размер модели будет делиться на него
+
     Tasker tasker; //выполнитель задач, например функция update
 
     @Override
@@ -188,6 +190,10 @@ public final class MagicModels extends JavaPlugin {
             Bukkit.getLogger().severe("MagicModels MagicModels.java spawnModel() error " + exception.getMessage());
         }
         return null;
+    }
+
+    public int getScaleResourcePackModel() {
+        return scaleResourcePackModel;
     }
 
     public ActiveModel spawnModel(

@@ -608,9 +608,9 @@ public class ResourcePackBuilder {
 
     private static List<Float> mathVec3(List<Float> cubeVec, List<Float> boneVec, List<Float> pivot){
         List<Float> newVector = new ArrayList<>();
-        float x = (cubeVec.getFirst() - boneVec.getFirst()) * 0.5f + pivot.getFirst();
-        float y = (cubeVec.get(1) - boneVec.get(1)) * 0.5f + pivot.get(1);
-        float z = (cubeVec.get(2) - boneVec.get(2)) * 0.5f + pivot.get(2);
+        float x = (cubeVec.getFirst() - boneVec.getFirst()) / MagicModels.getPlugin().getScaleResourcePackModel() + pivot.getFirst();
+        float y = (cubeVec.get(1) - boneVec.get(1)) / MagicModels.getPlugin().getScaleResourcePackModel() + pivot.get(1);
+        float z = (cubeVec.get(2) - boneVec.get(2)) / MagicModels.getPlugin().getScaleResourcePackModel() + pivot.get(2);
         newVector.add(x);
         newVector.add(y);
         newVector.add(z);

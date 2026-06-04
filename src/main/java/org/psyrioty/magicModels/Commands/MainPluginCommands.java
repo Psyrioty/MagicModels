@@ -9,6 +9,7 @@ import org.psyrioty.magicModels.MagicModels;
 import org.psyrioty.magicModels.Objects.ActiveModel;
 import org.psyrioty.magicModels.Objects.Model;
 import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
+import org.psyrioty.magicModels.utils.Converter;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -21,6 +22,13 @@ public class MainPluginCommands implements CommandExecutor {
         }
         if(args.length == 0){
             return true;
+        }
+
+        if(args.length == 1) {
+            if (args[0].equals("reload")) {
+                Converter.ConvertBBModelsToResourcePackAndModels();
+                return true;
+            }
         }
 
         MagicModels.getPlugin().spawnModel(player, args[0], null);

@@ -121,16 +121,16 @@ public class ActiveEntity {
         boolean moving = x != location.getX() ||
                 z != location.getZ();
 
-        if(walking == moving){
-            return;
-        }
-
         setLocation(
                 location.getWorld(),
                 location.getX(),
                 location.getY(),
                 location.getZ()
         );
+
+        if(walking == moving){
+            return;
+        }
 
         for (ActiveModel activeModel : activeModels) {
             for (Animation animation : activeModel.getAnimationController().getAnimations()) {

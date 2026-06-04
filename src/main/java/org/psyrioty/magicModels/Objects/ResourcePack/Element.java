@@ -1,5 +1,7 @@
 package org.psyrioty.magicModels.Objects.ResourcePack;
 
+import org.psyrioty.magicModels.MagicModels;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -133,9 +135,9 @@ public class Element {
     private List<Float> repairModel(List<Float> values){
         List<Float> newValues = new ArrayList<>();
 
-        float x = (values.getFirst() + 8) / 2;
-        float y = values.get(1) / 2;
-        float z = (values.get(2) + 8) / 2;
+        float x = (values.getFirst() + 8) / MagicModels.getPlugin().getScaleResourcePackModel();
+        float y = values.get(1) / MagicModels.getPlugin().getScaleResourcePackModel();
+        float z = (values.get(2) + 8) / MagicModels.getPlugin().getScaleResourcePackModel();
 
         newValues.add(x);
         newValues.add(y);

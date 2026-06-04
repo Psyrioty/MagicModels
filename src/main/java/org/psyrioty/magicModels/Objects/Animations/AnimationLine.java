@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.psyrioty.magicModels.MagicModels;
 import org.psyrioty.magicModels.Objects.Bone;
 import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
 
@@ -81,7 +82,7 @@ public class AnimationLine {
                 root,
                 startPos,
                 targetRotation,
-                new Vector3f(2f * root.getScale(), 2f * root.getScale(), 2f * root.getScale()),
+                new Vector3f(MagicModels.getPlugin().getScaleResourcePackModel() * root.getScale(), MagicModels.getPlugin().getScaleResourcePackModel() * root.getScale(), MagicModels.getPlugin().getScaleResourcePackModel() * root.getScale()),
                 new Vector3f(0, 0, 0),
                 activeEntity
         );
@@ -166,7 +167,7 @@ public class AnimationLine {
                         bone.getAnimPositionY(),
                         bone.getAnimPositionZ()
                 )
-                .mul(new Vector3f(parentWorldScale).div(2.0f));
+                .mul(new Vector3f(parentWorldScale).div(MagicModels.getPlugin().getScaleResourcePackModel()));
 
         Vector3f worldPos = new Vector3f(localOffset)
                 .rotate(parentWorldRot)

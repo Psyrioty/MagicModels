@@ -51,7 +51,6 @@ public class Converter {
                     continue;
                 }
 
-                MagicModels.getPlugin().getModels().add(model);
 
 
                 AnimationController animationController = createAnimationController(modelFile, bones); //создание анимаций
@@ -569,10 +568,22 @@ public class Converter {
             List<Bone> headBones = new ArrayList<>();
             setChildBones(bones, allOutliners, headBones);
 
-            Model model = new Model(
-                    headBones,
-                    modelFile.getName().replace(".bbmodel", "")
-            );
+            Model model = null;
+            for (Model modelOld : MagicModels.getPlugin().getModels()) {
+                if (modelOld.getName().equals(modelFile.getName().replace(".bbmodel", ""))) {
+                    model = modelOld;
+                    model.setHeadBones(headBones);
+                    break;
+                }
+            }
+
+            if (model == null){
+                model = new Model(
+                        headBones,
+                        modelFile.getName().replace(".bbmodel", "")
+                );
+                MagicModels.getPlugin().getModels().add(model);
+            }
 
             return model;
 
