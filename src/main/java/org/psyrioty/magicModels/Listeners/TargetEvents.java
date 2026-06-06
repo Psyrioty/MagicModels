@@ -21,11 +21,6 @@ import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
 
 public class TargetEvents implements Listener {
     @EventHandler
-    private void targetTeleport(EntityTeleportEvent event){
-
-    }
-
-    @EventHandler
     private void targetMove(EntityMoveEvent event){
         if(event.isCancelled()){
             return;
