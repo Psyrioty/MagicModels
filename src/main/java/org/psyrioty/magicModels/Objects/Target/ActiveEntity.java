@@ -64,7 +64,7 @@ public class ActiveEntity {
         }
 
         if(activeModels != null) {
-            for (ActiveModel activeModel : activeModels) {
+            for (ActiveModel activeModel : new ArrayList<>(activeModels)) {
                 activeModel.animationTick();
             }
         }

@@ -6,6 +6,7 @@ import org.psyrioty.magicModels.MagicModels;
 import org.psyrioty.magicModels.Objects.ActiveModel;
 import org.psyrioty.magicModels.Objects.Target.ActiveEntity;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class Tasker {
 
     private void update(){
         updateTask = Bukkit.getScheduler().runTaskTimerAsynchronously(MagicModels.getPlugin(), () -> {
-            for (ActiveEntity activeEntity: MagicModels.getPlugin().getActiveEntities()){
+            for (ActiveEntity activeEntity: new HashSet<>(MagicModels.getPlugin().getActiveEntities())){
                 activeEntity.animationTick();
             }
         },1L,1L);
